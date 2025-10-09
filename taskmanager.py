@@ -1,8 +1,8 @@
 import json
 
-
+#clase tarea
 class Task:
-
+    #cada tarea tiene atributos: id, descripcion y completada
     def __init__(self, id, description, completed=False):
         self.id = id
         self.description = description
@@ -12,15 +12,17 @@ class Task:
         status = "✔️" if self.completed else "❌"
         return f"[{status}] #{self.id}: {self.description}"
     
+#clase manager    
 class TaskManager:
 
     FILENAME = "task.json"
-
+    #tiene los atributos tasks(lista) y nextID(int)
     def __init__(self):
         self._tasks=[]
         self._next_id=1
         self.load_tasks()
 
+    #add task recibe una descripcion, la añade a la lista de tasks, sube el contador y guarda en el json
     def add_task(self, description):
         task = Task(self._next_id, description)
         self._tasks.append(task)
@@ -28,13 +30,16 @@ class TaskManager:
         print(f"Tarea añadida: {description}")
         self.save_tasks()
 
+    #list task comprueba que la lista no este vacia y si no lo esta muestra las tareas
     def list_task(self):
         if not self._tasks:
             print("No hay tareas pendientes")
         else:
             for task in self._tasks:
                 print(task)
-    
+
+    #complete task recibe un id de tarea, comprueba si esta en la lista y si lo esta,
+    #cambia su valor de completed a true y guarda en el json
     def complete_task(self, id):
         for task in self._tasks:
             if task.id == id:
@@ -43,7 +48,9 @@ class TaskManager:
                 self.save_tasks()
                 return
         print(f"Tarea no encontrada: #{id}")
-    
+
+    #delete task recibe un id de tarea, comprueba si esta en la lista y si lo esta,
+    #elimina esa tarea de la lista y guarda en el json
     def delete_task(self, id):
         for task in self._tasks:
             if task.id == id:
@@ -53,6 +60,7 @@ class TaskManager:
                 return
         print(f"Tarea no encontrada: #{id}")
 
+    #load task sirve para cargar el json
     def load_tasks(self):
         try:
             with open(self.FILENAME, "r") as file:
@@ -65,6 +73,7 @@ class TaskManager:
         except FileNotFoundError:
             self._tasks = []
 
+    #save task sirve para guardar el json
     def save_tasks(self):
         with open(self.FILENAME, "w") as file:
             json.dump([{"id": task.id, "description": task.description, "completed": task.completed} for task in self._tasks], file, indent=4)
